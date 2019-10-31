@@ -6,9 +6,9 @@ TITLE lab2
 	ExitProcess PROTO, dwExitCode:DWORD
 
 .data
-	avar db -1
-	bvar db 2
-	cvar db -3
+	avar db 7
+	bvar db 1
+	cvar db 10
 
 	yvar dw 0
 
@@ -49,6 +49,7 @@ _main proc
 	cmp bx, ax
 	jg short greater
 	jl short less
+	
 
 	; y = a * b * c
 	mov al, avar
@@ -59,13 +60,32 @@ _main proc
 	jmp exit
 
 
-
+	; y = [a * b / c]
 	greater:
+	mov bl, cvar 
+	mov al, avar
+	imul bvar
+	cbw
+	idiv bl
+	mov yvar, ax
 	jmp exit
+
+	; y = {a / (b * c)}
 	less:
+	mov bl, bvar
+	mov cl, cvar
+	mov al, avar
+	cbw
+	idiv bl
+	cbw
+	idiv cl
+	mov dl, ah
+	mov al, dl
+	cbw
+	mov yvar, ax
 	jmp exit
 	
 	exit:
-þ	INVOKE ExitProcess, 0
+	INVOKE ExitProcess, 0
 _main ENDP
 END _main
